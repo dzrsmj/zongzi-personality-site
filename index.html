@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>你是什么粽子？端午人格测试</title>
+<meta name="description" content="3道题测出你的粽子人格！鲜肉粽还是榴莲冰粽？测完分享给朋友，看看谁和你一样。">
+<!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?d45922a4f146749aa40606104912ac36";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<style>
+  :root {
+    --leaf: #4a7c59;
+    --leaf-dark: #2d5a3a;
+    --leaf-light: #e8f5e9;
+    --bamboo: #6b8e4e;
+    --rice: #faf3e0;
+    --gold: #d4a853;
+    --gold-dark: #b8860b;
+    --text: #2d3436;
+    --sub: #636e72;
+    --card: #ffffff;
+    --bg: #f5f0e8;
+    --divider: #e0d5c1;
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px;
+    -webkit-tap-highlight-color: transparent;
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(74,124,89,0.06) 0%, transparent 50%),
+      radial-gradient(circle at 80% 90%, rgba(212,168,83,0.08) 0%, transparent 50%);
+  }
+  .container { max-width: 440px; width: 100%; }
+
+  /* ===== Header ===== */
+  .header {
+    text-align: center;
+    margin: 16px 0 8px;
+  }
+  .header .logo { font-size: 3rem; margin-bottom: 4px; display: block; }
+  .header h1 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--leaf-dark);
+    letter-spacing: 0.5px;
+  }
+  .header .sub {
+    font-size: 0.82rem;
+    color: var(--sub);
+    margin-top: 2px;
+  }
+
+  /* ===== Screen transitions ===== */
+  .screen { display: none; }
+  .screen.active { display: block; animation: fadeIn 0.35s ease; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== Start Screen ===== */
+  .start-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 32px 20px 28px;
+    text-align: center;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+  }
+  .start-card .hero-emoji { font-size: 5rem; display: block; margin-bottom: 8px; }
+  .start-card .hero-text {
+    font-size: 1.05rem;
+    color: var(--text);
+    line-height: 1.8;
+    margin-bottom: 24px;
+    font-weight: 500;
+  }
+  .start-card .hero-text span { color: var(--leaf); font-weight: 700; }
+  .btn-start {
+    display: inline-block;
+    background: var(--leaf);
+    color: #fff;
+    border: none;
+    padding: 14px 48px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    border-radius: 50px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+    box-shadow: 0 4px 16px rgba(74,124,89,0.3);
+  }
+  .btn-start:active { transform: scale(0.96); background: var(--leaf-dark); }
+
+  /* ===== Question Screen ===== */
+  .q-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 28px 20px 24px;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+  }
+  .q-progress {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  .q-progress .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--divider);
+    transition: all 0.3s;
+  }
+  .q-progress .dot.done { background: var(--leaf); }
+  .q-progress .dot.current { background: var(--gold); transform: scale(1.3); }
+  .q-label {
+    font-size: 0.75rem;
+    color: var(--sub);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .q-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 24px;
+    color: var(--leaf-dark);
+    line-height: 1.5;
+  }
+  .q-options { display: flex; flex-direction: column; gap: 10px; }
+  .q-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 2px solid var(--divider);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #fafaf9;
+    font-size: 1rem;
+    color: var(--text);
+    text-align: left;
+  }
+  .q-option:active { transform: scale(0.98); }
+  .q-option .opt-emoji { font-size: 1.6rem; flex-shrink: 0; }
+  .q-option .opt-text { flex: 1; line-height: 1.4; }
+  .q-option.selected {
+    border-color: var(--leaf);
+    background: var(--leaf-light);
+    font-weight: 600;
+  }
+
+  /* ===== Result Screen ===== */
+  .result-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 0;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+    overflow: hidden;
+  }
+  .result-banner {
+    background: linear-gradient(135deg, var(--leaf), var(--bamboo));
+    padding: 28px 20px 24px;
+    text-align: center;
+    color: #fff;
+  }
+  .result-banner .zongzi-emoji { font-size: 4.5rem; display: block; margin-bottom: 6px; }
+  .result-banner .zongzi-name {
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+  }
+  .result-banner .zongzi-tag {
+    font-size: 0.85rem;
+    opacity: 0.85;
+    margin-top: 4px;
+  }
+  .result-body { padding: 24px 20px; text-align: center; }
+  .result-desc {
+    font-size: 1.08rem;
+    line-height: 1.9;
+    color: var(--text);
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+  .result-detail {
+    font-size: 0.85rem;
+    color: var(--sub);
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+  .btn-share {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--gold);
+    color: #fff;
+    border: none;
+    padding: 12px 32px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    border-radius: 50px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+    box-shadow: 0 4px 16px rgba(212,168,83,0.35);
+  }
+  .btn-share:active { transform: scale(0.96); }
+  .btn-retry {
+    display: inline-block;
+    margin-top: 12px;
+    background: none;
+    border: 1.5px solid var(--divider);
+    color: var(--sub);
+    padding: 10px 28px;
+    font-size: 0.9rem;
+    border-radius: 50px;
+    cursor: pointer;
+    background: #fff;
+  }
+  .btn-retry:active { background: #f5f5f5; }
+
+  /* ===== Share overlay ===== */
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 100;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .overlay.show { display: flex; }
+  .overlay .share-img {
+    max-width: 90vw;
+    max-height: 70vh;
+    border-radius: var(--radius);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+  }
+  .overlay .tip {
+    color: #fff;
+    margin-top: 16px;
+    font-size: 0.9rem;
+    opacity: 0.8;
+  }
+  .overlay .btn-close {
+    margin-top: 12px;
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 10px 32px;
+    font-size: 0.95rem;
+    border-radius: 50px;
+    cursor: pointer;
+  }
+
+  /* ===== Footer ===== */
+  .footer {
+    text-align: center;
+    margin: 20px 0;
+    font-size: 0.75rem;
+    color: #b0a99a;
+  }
+  .footer a { color: var(--leaf); text-decoration: none; }
+
+  /* ===== Responsive ===== */
+  @media (min-width: 440px) {
+    body { padding: 20px; }
+    .header { margin: 20px 0 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <span class="logo">🐲</span>
+    <h1>你是什么粽子？</h1>
+    <p class="sub">3道题 · 测出你的端午人格</p>
+  </div>
+
+  <!-- ===== Screen: Start ===== -->
+  <div class="screen active" id="screen-start">
+    <div class="start-card">
+      <span class="hero-emoji">🎋</span>
+      <p class="hero-text">
+        粽子有<span>甜咸之争</span>，<br>但人格可不止两种。<br>3道题，看看你是哪一款粽子 👇
+      </p>
+      <button class="btn-start" onclick="startTest()">开始测试</button>
+    </div>
+    <div class="footer">
+      🐲 端午限定 · 转发朋友一起玩
+    </div>
+  </div>
+
+  <!-- ===== Screen: Question ===== -->
+  <div class="screen" id="screen-question">
+    <div class="q-card">
+      <div class="q-progress" id="q-progress"></div>
+      <div class="q-label" id="q-label"></div>
+      <div class="q-title" id="q-title"></div>
+      <div class="q-options" id="q-options"></div>
+    </div>
+  </div>
+
+  <!-- ===== Screen: Result ===== -->
+  <div class="screen" id="screen-result">
+    <div class="result-card" id="result-card"></div>
+    <div style="text-align:center;margin-top:12px;">
+      <button class="btn-retry" onclick="restartTest()">🔄 再测一次</button>
+    </div>
+    <div class="footer">
+      转发给朋友 · 看看TA是什么粽子 🎋
+    </div>
+  </div>
+
+  <!-- Share overlay -->
+  <div class="overlay" id="overlay" onclick="closeOverlay(event)">
+    <img class="share-img" id="share-img" alt="分享图">
+    <p class="tip">长按图片保存 → 发朋友圈</p>
+    <button class="btn-close" onclick="closeOverlay()">关闭</button>
+  </div>
+
+</div>
+
+<script>
+/* ============================================
+   粽子人格测试 — 核心逻辑
+   ============================================ */
+
+// 8种粽子定义
+const ZONGZI = [
+  {
+    id: 'xianrou',
+    name: '鲜肉粽',
+    emoji: '🥩',
+    tag: '务实可靠型',
+    desc: '你是团队的定海神针，<br>靠谱二字刻在脑门上。<br>不整花活，但有你万事稳。',
+    detail: '经典款，永不翻车。大家遇到事情第一个想到的就是你，因为知道交给你一定行。',
+  },
+  {
+    id: 'danhuang',
+    name: '蛋黄肉粽',
+    emoji: '🥚',
+    tag: '内有乾坤型',
+    desc: '看起来普通，切开全是料。<br>你是那种越了解，<br>越觉得厉害的人。',
+    detail: '初见不声不响，熟了之后段子不断。你的有趣需要时间解锁，但解锁了就上瘾。',
+  },
+  {
+    id: 'dousha',
+    name: '豆沙粽',
+    emoji: '🫘',
+    tag: '温柔细腻型',
+    desc: '细腻是你看世界的滤镜，<br>温柔是你给身边人的礼物。<br>和你相处，很舒服。',
+    detail: '你总记得朋友的喜好，聊天从不让话掉地上。不是人群里最亮眼的，但一定是最暖的。',
+  },
+  {
+    id: 'mizao',
+    name: '蜜枣粽',
+    emoji: '🍯',
+    tag: '甜度爆表型',
+    desc: '你就像蜜枣粽里那颗枣，<br>甜到心里去。<br>朋友圈的快乐源泉。',
+    detail: '有你的局永远不会冷场。自带阳光属性，走到哪暖到哪，大家都想跟你做朋友。',
+  },
+  {
+    id: 'baimi',
+    name: '白米粽',
+    emoji: '🍚',
+    tag: '极简主义型',
+    desc: '简单即是高级。<br>你不跟风不盲从，<br>蘸什么调料，自己说了算。',
+    detail: '不凑热闹、不站队、不解释。你有自己的节奏，活得清醒又自在，别人羡慕不来。',
+  },
+  {
+    id: 'huitang',
+    name: '灰汤粽',
+    emoji: '🌫️',
+    tag: '特立独行型',
+    desc: '你不是故意不一样，<br>你是真的就不一样。<br>小众但自洽，活得通透。',
+    detail: '不走寻常路，不按套路出牌。你选的路可能少有人走，但你走得比谁都坚定。',
+  },
+  {
+    id: 'babao',
+    name: '八宝粽',
+    emoji: '🎨',
+    tag: '多彩人生型',
+    desc: '人生不能只有一种颜色。<br>你什么都想试试，<br>能量满格，好奇心永远在线。',
+    detail: '你的周末永远有安排：攀岩、陶艺、新菜谱……朋友问你累不累，你说"好玩就不累"。',
+  },
+  {
+    id: 'liulian',
+    name: '榴莲冰粽',
+    emoji: '🫧',
+    tag: '新潮先锋型',
+    desc: '传统？不存在的。<br>你只做自己觉得对的事，<br>别人接受不接受的，那是别人的事。',
+    detail: '第一个吃螃蟹的人。你试的新东西别人三年后才开始追，那时候你已经玩下一个了。',
+  },
+];
+
+// 3道题 — 每题权重递增(1/2/4)，保证任意答案组合总分唯一，数学上消除平局
+const QUESTIONS = [
+  {
+    id: 'q1',
+    weight: 1,
+    label: '第 1 / 3 题 · 口味偏好',
+    title: '粽子端上来，你第一口想吃到什么？',
+    options: [
+      { emoji: '🥩', text: '咸口的，有肉才叫粽子', scores: { xianrou: 1 } },
+      { emoji: '🫘', text: '甜口的，豆沙蜜枣才是正道', scores: { dousha: 1 } },
+      { emoji: '🍚', text: '原味白米，蘸什么再说', scores: { baimi: 1 } },
+      { emoji: '🫧', text: '猎奇口味，榴莲冰粽来一个', scores: { liulian: 1 } },
+    ],
+  },
+  {
+    id: 'q2',
+    weight: 2,
+    label: '第 2 / 3 题 · 社交场景',
+    title: '朋友聚会，你通常是哪个角色？',
+    options: [
+      { emoji: '📋', text: '组织者，时间地点都安排好了', scores: { babao: 2 } },
+      { emoji: '😂', text: '气氛组，段子不停全场爆笑', scores: { mizao: 2 } },
+      { emoji: '☺️', text: '安静陪伴，听大家聊天就很开心', scores: { dousha: 2 } },
+      { emoji: '💡', text: '灵魂人物，话题经常从我这里拐弯', scores: { huitang: 2 } },
+    ],
+  },
+  {
+    id: 'q3',
+    weight: 4,
+    label: '第 3 / 3 题 · 假期态度',
+    title: '假期最后一天，你一般在干嘛？',
+    options: [
+      { emoji: '📝', text: '收尾整理，把该做的事做完', scores: { xianrou: 4 } },
+      { emoji: '🍻', text: '约最后一顿，吃到尽兴才结束', scores: { danhuang: 4 } },
+      { emoji: '🛋️', text: '躺平刷手机，假期就是用来浪费的', scores: { baimi: 4 } },
+      { emoji: '🚗', text: '临时起意，去个没去过的地方', scores: { liulian: 4 } },
+    ],
+  },
+];
+
+// 状态
+let currentQ = 0;
+let scores = {};
+let selectedZongzi = null;
+let isAnswering = false; // 防双击
+
+// 预加载二维码
+const qrImage = new Image();
+qrImage.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADIAQMAAACXljzdAAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAABjklEQVRYhdWXMbKDMAxExVBQ+ggcxTf79tE4io9ASeFBf1fyD/mZSY1wkUl4FJG1Wq9Fvq6iXCLLnlVmfp/syRmA/NgfnPqy86Vj3WTqfBScoIZW+D3Xk5869aRan0Cw8+gCVsv1OUTmA70w7TyDuHb0wE/tS5NPVd1IfBqpayhkhq7L/zmNScbCLm/i6v6wuZCE9TS6R9qstE3OeUdVsQmcWhuUwi64X/NVaic42Ydfy8Rn0M4++hCXYELHG7mqmpNIUnbhflLG2WeuTA+By+2r1tiEu7z6BNKVW34pJDKhQlblNGpFPZhG7WL1RCZ2yvBXsnS0kiT2IjZ5ndjmfI1njWsnMimYTdfOX4oePADBv06e8Ie/WdrIXk9sUi11DufTbpMZnOg4SzJyEZ3PuqBnaOKL9dDtFmVHGE1jk2ISRz1I9V6JJ3wJTTz7414ynM/quTzxXuI3vc4NflPIdQeMTCxt8F6CXaYr6yOIp84+6jF1hyamHd5cN8tFVx6NTN6mUS3Z0btbrrHJ1/ULy+uyjUg7tI8AAAAASUVORK5CYII=';
+
+/* ========== Navigation ========== */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+}
+
+/* ========== Start ========== */
+function startTest() {
+  currentQ = 0;
+  scores = {};
+  isAnswering = false;
+  ZONGZI.forEach(z => scores[z.id] = 0);
+  selectedZongzi = null;
+  renderQuestion();
+  showScreen('question');
+}
+
+/* ========== Render Question ========== */
+function renderQuestion() {
+  const q = QUESTIONS[currentQ];
+  document.getElementById('q-label').textContent = q.label;
+  document.getElementById('q-title').textContent = q.title;
+
+  // Progress dots
+  const dots = QUESTIONS.map((_, i) => {
+    let cls = 'dot';
+    if (i < currentQ) cls += ' done';
+    else if (i === currentQ) cls += ' current';
+    return `<span class="${cls}"></span>`;
+  }).join('');
+  document.getElementById('q-progress').innerHTML = dots;
+
+  // Options
+  const optsHtml = q.options.map((opt, i) => `
+    <div class="q-option" onclick="selectAnswer(${i})">
+      <span class="opt-emoji">${opt.emoji}</span>
+      <span class="opt-text">${opt.text}</span>
+    </div>
+  `).join('');
+  document.getElementById('q-options').innerHTML = optsHtml;
+
+  // Scroll to top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ========== Select Answer ========== */
+function selectAnswer(idx) {
+  if (isAnswering) return; // 防双击
+  isAnswering = true;
+
+  const q = QUESTIONS[currentQ];
+  const opt = q.options[idx];
+
+  // Visual feedback
+  const optionEls = document.querySelectorAll('.q-option');
+  optionEls.forEach(el => el.classList.remove('selected'));
+  optionEls[idx].classList.add('selected');
+
+  // Add scores
+  Object.entries(opt.scores).forEach(([zid, pts]) => {
+    scores[zid] = (scores[zid] || 0) + pts;
+  });
+
+  // Next question or show result
+  setTimeout(() => {
+    currentQ++;
+    if (currentQ < QUESTIONS.length) {
+      isAnswering = false;
+      renderQuestion();
+    } else {
+      showResult();
+    }
+  }, 250);
+}
+
+/* ========== Show Result ========== */
+function showResult() {
+  // 二进制权重(1/2/4)保证总分组合唯一，数学上不存在平局
+  let bestId = null;
+  let bestScore = -1;
+  Object.entries(scores).forEach(([zid, s]) => {
+    if (s > bestScore) { bestScore = s; bestId = zid; }
+  });
+
+  selectedZongzi = ZONGZI.find(z => z.id === bestId);
+
+  const z = selectedZongzi;
+  const html = `
+    <div class="result-banner">
+      <span class="zongzi-emoji">${z.emoji}</span>
+      <div class="zongzi-name">${z.name}</div>
+      <div class="zongzi-tag">—— ${z.tag} ——</div>
+    </div>
+    <div class="result-body">
+      <p class="result-desc">${z.desc}</p>
+      <p class="result-detail">${z.detail}</p>
+      <button class="btn-share" onclick="shareResult()">📤 生成分享图</button>
+    </div>
+  `;
+  document.getElementById('result-card').innerHTML = html;
+  showScreen('result');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ========== Restart ========== */
+function restartTest() {
+  startTest();
+}
+
+/* ========== Share Image ========== */
+function shareResult() {
+  const z = selectedZongzi;
+  if (!z) return;
+
+  // If QR not loaded yet, wait briefly
+  if (!qrImage.complete) {
+    const checkQR = setInterval(() => {
+      if (qrImage.complete) { clearInterval(checkQR); doShare(); }
+    }, 100);
+    setTimeout(() => clearInterval(checkQR), 3000); // timeout
+    return;
+  }
+  doShare();
+
+  function doShare() {
+
+  const canvas = document.createElement('canvas');
+  const W = 600;
+  const H = 960;
+  const SCALE = 2; // 2x分辨率，手机上看不糊
+  canvas.width = W * SCALE;
+  canvas.height = H * SCALE;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(SCALE, SCALE);
+
+  // Background — rice paper texture
+  const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
+  bgGrad.addColorStop(0, '#faf7f0');
+  bgGrad.addColorStop(0.5, '#fdfbf7');
+  bgGrad.addColorStop(1, '#f5f0e5');
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(0, 0, W, H);
+
+  // Decorative top banners
+  // Top green bar
+  const topGrad = ctx.createLinearGradient(0, 0, W, 0);
+  topGrad.addColorStop(0, '#4a7c59');
+  topGrad.addColorStop(0.5, '#5a8f6a');
+  topGrad.addColorStop(1, '#4a7c59');
+  ctx.fillStyle = topGrad;
+  ctx.fillRect(0, 0, W, 8);
+
+  // Bottom accent line
+  ctx.fillStyle = '#d4a853';
+  ctx.fillRect(0, 8, W, 3);
+
+  // Bamboo leaf decorations (simplified)
+  function drawLeaf(x, y, angle, scale, color) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(angle * Math.PI / 180);
+    ctx.scale(scale, scale);
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.quadraticCurveTo(20, -15, 60, -3);
+    ctx.quadraticCurveTo(20, 8, 0, 0);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  // Some decorative leaves in corners
+  const leafGreen = 'rgba(74,124,89,0.15)';
+  drawLeaf(50, 100, -30, 2.5, leafGreen);
+  drawLeaf(560, 120, 160, 2, leafGreen);
+  drawLeaf(40, 800, -20, 3, leafGreen);
+  drawLeaf(550, 780, 150, 2.5, leafGreen);
+  drawLeaf(80, 400, -45, 1.8, 'rgba(74,124,89,0.08)');
+  drawLeaf(520, 500, 140, 1.5, 'rgba(74,124,89,0.08)');
+
+  // Title area
+  ctx.fillStyle = '#2d5a3a';
+  ctx.font = 'bold 36px "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('我是什么粽子？', W / 2, 85);
+
+  // Subtitle
+  ctx.fillStyle = '#8a7e6b';
+  ctx.font = '18px "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif';
+  ctx.fillText('端午人格测试 · 3题揭晓', W / 2, 118);
+
+  // Divider line with ornament
+  ctx.strokeStyle = '#d4a853';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(150, 145);
+  ctx.lineTo(450, 145);
+  ctx.stroke();
+  // Center diamond
+  ctx.fillStyle = '#d4a853';
+  ctx.beginPath();
+  ctx.moveTo(W/2, 140);
+  ctx.lineTo(W/2 + 6, 145);
+  ctx.lineTo(W/2, 150);
+  ctx.lineTo(W/2 - 6, 145);
+  ctx.closePath();
+  ctx.fill();
+
+  // Zongzi emoji — large
+  ctx.font = '120px "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(z.emoji, W / 2, 270);
+
+  // Zongzi name
+  ctx.fillStyle = '#2d3436';
+  ctx.font = 'bold 44px "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif';
+  ctx.fillText(z.name, W / 2, 330);
+
+  // Tag
+  ctx.fillStyle = '#fff';
+  const tagW = ctx.measureText(z.tag).width + 40;
+  const tagX = W / 2 - tagW / 2;
+  const tagY = 350;
+  // Tag bg pill
+  ctx.fillStyle = '#4a7c59';
+  ctx.beginPath();
+  ctx.roundRect(tagX, tagY, tagW, 34, 17);
+  ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 18px "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif';
+  ctx.fillText(z.tag, W / 2, tagY + 25);
+
+  // Description — wrapped text
+  const descLines = z.desc.replace(/<br>/g, '\n').split('\n');
+  ctx.fillStyle = '#2d3436';
+  ctx.font = '22px "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif';
+  ctx.textAlign = 'center';
+  descLines.forEach((line, i) => {
+    ctx.fillText(line, W / 2, 440 + i * 36);
+  });
+
+  // Detail text — wrapped
+  const detailY = 440 + descLines.length * 36 + 20;
+  ctx.fillStyle = '#636e72';
+  ctx.font = '16px "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif';
+  // Simple text wrapping
+  const maxW = 480;
+  const words = z.detail;
+  let line = '';
+  let lineY = detailY;
+  for (let i = 0; i < words.length; i++) {
+    const test = line + words[i];
+    if (ctx.measureText(test).width > maxW && line.length > 0) {
+      ctx.fillText(line, W / 2, lineY);
+      line = words[i];
+      lineY += 28;
+    } else {
+      line = test;
+    }
+  }
+  if (line) ctx.fillText(line, W / 2, lineY);
+
+  // Bottom CTA section
+  const ctaY = lineY + 60;
+
+  // Separator
+  ctx.strokeStyle = '#e0d5c1';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(100, ctaY);
+  ctx.lineTo(500, ctaY);
+  ctx.stroke();
+
+  // CTA text
+  ctx.fillStyle = '#2d5a3a';
+  ctx.font = 'bold 20px "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif';
+  ctx.fillText('你也来测测？扫码开始 👇', W / 2, ctaY + 35);
+
+  // QR Code — real QR code preloaded on page init
+  const qrX = W / 2 - 50;
+  const qrY = ctaY + 50;
+  const qrSize = 100;
+
+  // Background behind QR
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.roundRect(qrX - 4, qrY - 4, qrSize + 8, qrSize + 8, 10);
+  ctx.fill();
+
+  // Draw real QR code (preloaded)
+  ctx.drawImage(qrImage, qrX, qrY, qrSize, qrSize);
+
+  // URL below QR
+  ctx.fillStyle = '#8a7e6b';
+  ctx.font = '14px "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif';
+  ctx.fillText('dzrsmj.github.io/zongzi-personality', W / 2, qrY + 125);
+
+  // Bottom brand bar
+  const brandY = H - 50;
+  ctx.fillStyle = '#4a7c59';
+  ctx.fillRect(0, brandY, W, 3);
+
+  ctx.fillStyle = '#b0a99a';
+  ctx.font = '13px "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('🐲 扫码来测，看看你是什么粽子', 20, brandY - 12);
+  ctx.textAlign = 'right';
+  ctx.fillText('DT成长空间 · 出品', W - 20, brandY - 12);
+
+    // Convert to image and show
+    const dataUrl = canvas.toDataURL('image/png');
+    const overlay = document.getElementById('overlay');
+    const shareImg = document.getElementById('share-img');
+    shareImg.src = dataUrl;
+    overlay.classList.add('show');
+  } // end doShare
+}
+
+function closeOverlay(e) {
+  if (e && e.target !== document.getElementById('overlay')) return;
+  document.getElementById('overlay').classList.remove('show');
+}
+
+/* ========== Init ========== */
+// Pre-render first screen
+showScreen('start');
+
+// Polyfill roundRect if needed
+if (!CanvasRenderingContext2D.prototype.roundRect) {
+  CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+    if (typeof r === 'number') r = { tl: r, tr: r, br: r, bl: r };
+    this.beginPath();
+    this.moveTo(x + r.tl, y);
+    this.lineTo(x + w - r.tr, y);
+    this.quadraticCurveTo(x + w, y, x + w, y + r.tr);
+    this.lineTo(x + w, y + h - r.br);
+    this.quadraticCurveTo(x + w, y + h, x + w - r.br, y + h);
+    this.lineTo(x + r.bl, y + h);
+    this.quadraticCurveTo(x, y + h, x, y + h - r.bl);
+    this.lineTo(x, y + r.tl);
+    this.quadraticCurveTo(x, y, x + r.tl, y);
+    this.closePath();
+  };
+}
+</script>
+
+</body>
+</html>
